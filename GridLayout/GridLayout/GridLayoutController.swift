@@ -24,17 +24,14 @@ class GridLayoutController: UIViewController {
 
     var columnCount: CGFloat = 0
     var rowCount: CGFloat = 0
+
+    var randomColumn: Int?
+    var randomRow: Int?
+
     let statusBarHeight = UIApplication.shared.statusBarFrame.height
     let lineSpace: CGFloat = 5
 
     var timer: Timer?
-
-//    var pastTime: Int? {
-//
-//        didSet {
-//
-//        }
-//    }
 
     weak var delegate: GridLayoutDelegate?
 
@@ -64,7 +61,7 @@ class GridLayoutController: UIViewController {
 
         setupCollectionView()
 
-        startRandom()
+        startRandomWith(Int(columnCount), Int(rowCount))
 
     }
 
@@ -85,28 +82,28 @@ class GridLayoutController: UIViewController {
 
     }
 
-    func startRandom() {
+    func startRandomWith(_ column: Int, _ row: Int) {
 
         timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: { (_) in
 
             let now = Date()
-            let formatter = DateFormatter()
-            //"yyyy/MMM/dd E HH:mm:ss "
+            let formatter = DateFormatter() // "yyyy/MMM/dd E HH:mm:ss "
             formatter.dateFormat = "HH:mm:ss"
             let currentTime = formatter.string(from: now)
+            print("-----")
             print(currentTime)
 
-            self.handleRandom()
+            self.randomColumn = Int.random(in: 1...column)
+            self.randomRow = Int.random(in: 1...row)
 
+            self.collectionView.reloadData()
+
+            print(self.randomColumn!)
         })
 
-    }
-
-    func handleRandom() {
-
-        print("random")
 
     }
+
 }
 
 extension GridLayoutController: UICollectionViewDataSource {
@@ -136,39 +133,22 @@ extension GridLayoutController: UICollectionViewDataSource {
 
         case 0:
 
-            guard let cell = collectionView.dequeueReusableCell(
+            guard let colorCell = collectionView.dequeueReusableCell(
                 withReuseIdentifier: colorCellID,
                 for: indexPath) as? ColorCell else {
 
                     return UICollectionViewCell()
             }
 
-            var row = indexPath.row / Int(columnCount)
+            var row = indexPath.item / Int(columnCount)
 
             if row > 2 {
                 row = row % 3
             }
 
-            switch row {
+            colorCell.row = row
 
-            case 0:
-
-                cell.topView.backgroundColor = #colorLiteral(red: 0.9607843137, green: 0.9137254902, blue: 0.9137254902, alpha: 1)
-                cell.bottomView.backgroundColor = #colorLiteral(red: 0.6705882353, green: 0.2117647059, blue: 0.1882352941, alpha: 1)
-
-            case 1:
-
-                cell.topView.backgroundColor = #colorLiteral(red: 0.9137254902, green: 0.9607843137, blue: 0.9058823529, alpha: 1)
-                cell.bottomView.backgroundColor = #colorLiteral(red: 0.2901960784, green: 0.6117647059, blue: 0.1882352941, alpha: 1)
-
-            default:
-
-                cell.topView.backgroundColor = #colorLiteral(red: 0.9725490196, green: 0.9294117647, blue: 0.9176470588, alpha: 1)
-                cell.bottomView.backgroundColor = #colorLiteral(red: 0.7529411765, green: 0.3529411765, blue: 0.2274509804, alpha: 1)
-
-            }
-
-            return cell
+            return colorCell
 
         default:
 
@@ -177,6 +157,23 @@ extension GridLayoutController: UICollectionViewDataSource {
                 for: indexPath) as? ConfirmCell else {
 
                     return UICollectionViewCell()
+            }
+
+//            print(indexPath.item)
+
+            if let randomColumn = randomColumn {
+
+//                print("randomColumn: \(randomColumn)")
+//                print("indexPath.item: \(indexPath.item)")
+//                print("-----")
+
+                if indexPath.item == randomColumn - 1 {
+                    confirmCell.highlightView.backgroundColor = #colorLiteral(red: 0.3843137255, green: 0.8156862745, blue: 0.8274509804, alpha: 1)
+
+                } else {
+                    confirmCell.highlightView.backgroundColor = .lightGray
+                }
+
             }
 
             return confirmCell
@@ -228,7 +225,6 @@ extension GridLayoutController: UICollectionViewDelegateFlowLayout {
             width: width / CGFloat(columnCount),
             height: height / CGFloat(rowCount + 1)
         )
-
 
     }
 }

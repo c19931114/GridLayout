@@ -10,6 +10,31 @@ import UIKit
 
 class ColorCell: UICollectionViewCell {
 
+    var row: Int? {
+        
+        didSet {
+            
+            switch row {
+
+            case 0:
+
+                topView.backgroundColor = #colorLiteral(red: 0.9607843137, green: 0.9137254902, blue: 0.9137254902, alpha: 1)
+                bottomView.backgroundColor = #colorLiteral(red: 0.6705882353, green: 0.2117647059, blue: 0.1882352941, alpha: 1)
+
+            case 1:
+
+                topView.backgroundColor = #colorLiteral(red: 0.9137254902, green: 0.9607843137, blue: 0.9058823529, alpha: 1)
+                bottomView.backgroundColor = #colorLiteral(red: 0.2901960784, green: 0.6117647059, blue: 0.1882352941, alpha: 1)
+
+            default:
+
+                topView.backgroundColor = #colorLiteral(red: 0.9725490196, green: 0.9294117647, blue: 0.9176470588, alpha: 1)
+                bottomView.backgroundColor = #colorLiteral(red: 0.7529411765, green: 0.3529411765, blue: 0.2274509804, alpha: 1)
+
+            }
+        }
+    }
+
     let topView: UIView = {
 
         let view = UIView()
@@ -37,17 +62,9 @@ class ColorCell: UICollectionViewCell {
         return label
     }()
 
-    // 沒有 xib 走這邊
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        
-        contentView.backgroundColor = .black
-
-        setupView()
-
-    }
-
     private func setupView() {
+
+        contentView.backgroundColor = .black
 
         contentView.addSubview(bottomView)
         bottomView.leftAnchor.constraint(equalTo: contentView.leftAnchor).isActive = true
@@ -60,6 +77,14 @@ class ColorCell: UICollectionViewCell {
         topView.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
         topView.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
         topView.bottomAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
+
+    }
+
+    // 沒有 xib 走這邊
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        setupView()
 
     }
 

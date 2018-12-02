@@ -32,8 +32,7 @@ class ConfirmCell: UICollectionViewCell {
         return label
     }()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    private func setupView() {
 
         contentView.backgroundColor = #colorLiteral(red: 0.1882352941, green: 0.1882352941, blue: 0.1882352941, alpha: 1)
 
@@ -51,6 +50,15 @@ class ConfirmCell: UICollectionViewCell {
 
     }
 
+    // 沒有 xib 走這邊
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        setupView()
+
+    }
+
+    // 有 xib 走這邊
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
