@@ -8,14 +8,24 @@
 
 import UIKit
 
+protocol ConfirmCellDelegate: AnyObject {
+    func confirm()
+}
+
 class ConfirmCell: UICollectionViewCell {
 
     let lineSpace: CGFloat = 5
 
-    let highlightView: UIView = {
+    lazy var highlightView: UIView = {
+
         let view = UIView()
         view.backgroundColor = .lightGray
         view.translatesAutoresizingMaskIntoConstraints = false
+
+        view.isUserInteractionEnabled = false // default is true
+        view.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(stopRandom)))
+        // lazy var 才抓得到 self
+        // You cannot initialize the gesture recognizer with a reference to self because the initialization is not completed at that point.
 
         return view
     }()
@@ -25,12 +35,20 @@ class ConfirmCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .center
         label.text = "確定"
-        label.backgroundColor = .clear
+//        label.backgroundColor = .clear
+        label.backgroundColor = .red
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
 
         return label
     }()
+
+    @objc func stopRandom(tapGesture: UITapGestureRecognizer) {
+
+        print("tap")
+
+
+    }
 
     private func setupView() {
 

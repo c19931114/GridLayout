@@ -159,19 +159,15 @@ extension GridLayoutController: UICollectionViewDataSource {
                     return UICollectionViewCell()
             }
 
-//            print(indexPath.item)
-
             if let randomColumn = randomColumn {
-
-//                print("randomColumn: \(randomColumn)")
-//                print("indexPath.item: \(indexPath.item)")
-//                print("-----")
 
                 if indexPath.item == randomColumn - 1 {
                     confirmCell.highlightView.backgroundColor = #colorLiteral(red: 0.3843137255, green: 0.8156862745, blue: 0.8274509804, alpha: 1)
+                    confirmCell.highlightView.isUserInteractionEnabled = true
 
                 } else {
                     confirmCell.highlightView.backgroundColor = .lightGray
+                    confirmCell.highlightView.isUserInteractionEnabled = false
                 }
 
             }
