@@ -148,6 +148,23 @@ extension GridLayoutController: UICollectionViewDataSource {
 
             colorCell.row = row
 
+//            print("color: \(randomColumn) \(randomRow)")
+
+            if let randomColumn = randomColumn, let randomRow = randomRow {
+
+                let randomItem = Int(columnCount) * (randomRow - 1) + randomColumn - 1
+                
+                if indexPath.item == randomItem{
+                    colorCell.randomItemIsHidden = false
+
+                } else {
+                    colorCell.randomItemIsHidden = true
+                }
+
+            } else {
+                colorCell.randomItemIsHidden = true
+            }
+
             return colorCell
 
         default:
@@ -159,17 +176,22 @@ extension GridLayoutController: UICollectionViewDataSource {
                     return UICollectionViewCell()
             }
 
+            confirmCell.delegate = self
+
+//            print("confirm: \(randomColumn)")
+
             if let randomColumn = randomColumn {
 
                 if indexPath.item == randomColumn - 1 {
-                    confirmCell.highlightView.backgroundColor = #colorLiteral(red: 0.3843137255, green: 0.8156862745, blue: 0.8274509804, alpha: 1)
-                    confirmCell.highlightView.isUserInteractionEnabled = true
+                    confirmCell.selectable = true
 
-                } else {
-                    confirmCell.highlightView.backgroundColor = .lightGray
-                    confirmCell.highlightView.isUserInteractionEnabled = false
+                }
+                else {
+                    confirmCell.selectable = false
                 }
 
+            } else {
+                confirmCell.selectable = false
             }
 
             return confirmCell
@@ -178,6 +200,15 @@ extension GridLayoutController: UICollectionViewDataSource {
 
     }
 
+}
+
+extension GridLayoutController: ConfirmCellDelegate {
+
+    func confirmToStopRandom() {
+        randomColumn = nil
+        randomRow = nil
+        collectionView.reloadData()
+    }
 
 }
 

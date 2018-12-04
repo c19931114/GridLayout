@@ -9,12 +9,38 @@
 import UIKit
 
 protocol ConfirmCellDelegate: AnyObject {
-    func confirm()
+
+    func confirmToStopRandom()
 }
 
 class ConfirmCell: UICollectionViewCell {
 
     let lineSpace: CGFloat = 5
+
+    weak var delegate: ConfirmCellDelegate?
+
+    var selectable: Bool? {
+
+        didSet {
+
+            if let selectable = selectable {
+
+                if selectable {
+
+                    highlightView.backgroundColor = #colorLiteral(red: 0.3843137255, green: 0.8156862745, blue: 0.8274509804, alpha: 1)
+                    highlightView.isUserInteractionEnabled = true
+                    
+                } else {
+
+                    highlightView.backgroundColor = .lightGray
+                    highlightView.isUserInteractionEnabled = false
+
+                }
+
+            }
+
+        }
+    }
 
     lazy var highlightView: UIView = {
 
@@ -35,18 +61,30 @@ class ConfirmCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .center
         label.text = "確定"
-//        label.backgroundColor = .clear
-        label.backgroundColor = .red
+        label.backgroundColor = .clear
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
 
         return label
     }()
 
+    // 沒有 xib 走這邊
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        setupView()
+
+    }
+
+    // 有 xib 走這邊
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     @objc func stopRandom(tapGesture: UITapGestureRecognizer) {
 
         print("tap")
-
+        delegate?.confirmToStopRandom()
 
     }
 
@@ -66,19 +104,6 @@ class ConfirmCell: UICollectionViewCell {
         confirmLabel.rightAnchor.constraint(equalTo: highlightView.rightAnchor).isActive = true
         confirmLabel.heightAnchor.constraint(equalTo: highlightView.heightAnchor, multiplier: 1 / lineSpace) .isActive = true
 
-    }
-
-    // 沒有 xib 走這邊
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        setupView()
-
-    }
-
-    // 有 xib 走這邊
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
 }

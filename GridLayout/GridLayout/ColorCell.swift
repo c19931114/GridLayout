@@ -35,6 +35,25 @@ class ColorCell: UICollectionViewCell {
         }
     }
 
+    var randomItemIsHidden: Bool? {
+        
+        didSet {
+
+            if let isHidden = randomItemIsHidden {
+
+                if isHidden {
+
+                    randomLabel.text = nil
+
+                } else {
+
+                    randomLabel.text = "random"
+
+                }
+            }
+        }
+    }
+
     let topView: UIView = {
 
         let view = UIView()
@@ -62,6 +81,19 @@ class ColorCell: UICollectionViewCell {
         return label
     }()
 
+    // 沒有 xib 走這邊
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        setupView()
+
+    }
+
+    // 有 xib 走這邊
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     private func setupView() {
 
         contentView.backgroundColor = .black
@@ -78,19 +110,10 @@ class ColorCell: UICollectionViewCell {
         topView.rightAnchor.constraint(equalTo: contentView.rightAnchor).isActive = true
         topView.bottomAnchor.constraint(equalTo: bottomView.topAnchor).isActive = true
 
-    }
+        topView.addSubview(randomLabel)
+        randomLabel.centerXAnchor.constraint(equalTo: topView.centerXAnchor).isActive = true
+        randomLabel.centerYAnchor.constraint(equalTo: topView.centerYAnchor).isActive = true
 
-    // 沒有 xib 走這邊
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        setupView()
-
-    }
-
-    // 有 xib 走這邊
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 
 }
