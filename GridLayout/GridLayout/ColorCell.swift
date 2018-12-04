@@ -76,6 +76,7 @@ class ColorCell: UICollectionViewCell {
 
         let label = UILabel()
         label.textAlignment = .center
+//        label.adjustsFontSizeToFitWidth = true
         label.translatesAutoresizingMaskIntoConstraints = false
         
         return label

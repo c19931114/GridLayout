@@ -28,8 +28,8 @@ class GridLayoutController: UIViewController {
     var randomColumn: Int?
     var randomRow: Int?
 
-    let statusBarHeight = UIApplication.shared.statusBarFrame.height
-    let lineSpace: CGFloat = 5
+//    let statusBarHeight = UIApplication.shared.statusBarFrame.height
+    let lineSpace: CGFloat = 2
 
     var timer: Timer?
 
@@ -50,6 +50,10 @@ class GridLayoutController: UIViewController {
         return collectionView
     }()
 
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -61,8 +65,24 @@ class GridLayoutController: UIViewController {
 
         setupCollectionView()
 
-        startRandomWith(Int(columnCount), Int(rowCount))
+    }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        startRandomWith(Int(columnCount), Int(rowCount))
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        timer?.invalidate()
+    }
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        collectionView.reloadData()
     }
 
     private func setupCollectionView() {
@@ -74,11 +94,13 @@ class GridLayoutController: UIViewController {
         collectionView.delegate = self
 
         view.addSubview(collectionView)
-        collectionView.frame = CGRect(
-            x: 0,
-            y: statusBarHeight,
-            width: fullScreenSize.width,
-            height: fullScreenSize.height)
+
+        collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        // , constant: statusBarHeight
+        collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
 
     }
 
@@ -90,8 +112,9 @@ class GridLayoutController: UIViewController {
             let formatter = DateFormatter() // "yyyy/MMM/dd E HH:mm:ss "
             formatter.dateFormat = "HH:mm:ss"
             let currentTime = formatter.string(from: now)
-            print("-----")
+
             print(currentTime)
+            print("-----")
 
             self.randomColumn = Int.random(in: 1...column)
             self.randomRow = Int.random(in: 1...row)
@@ -246,7 +269,7 @@ extension GridLayoutController: UICollectionViewDelegateFlowLayout {
 //        let height = fullScreenSize.height - statusBarHeight - lineSpace * (rowCount + 1)
 
         let width = view.frame.width - lineSpace * (columnCount + 1)
-        let height = view.frame.height - statusBarHeight - lineSpace * (rowCount + 1)
+        let height = view.frame.height - lineSpace * (rowCount + 1)
 
         return CGSize(
             width: width / CGFloat(columnCount),

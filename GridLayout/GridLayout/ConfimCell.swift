@@ -61,6 +61,7 @@ class ConfirmCell: UICollectionViewCell {
         let label = UILabel()
         label.textAlignment = .center
         label.text = "確定"
+//        label.adjustsFontSizeToFitWidth = true
         label.backgroundColor = .clear
         label.textColor = .white
         label.translatesAutoresizingMaskIntoConstraints = false
