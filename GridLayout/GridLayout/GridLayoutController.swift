@@ -28,8 +28,10 @@ class GridLayoutController: UIViewController {
     var randomColumn: Int?
     var randomRow: Int?
 
-//    let statusBarHeight = UIApplication.shared.statusBarFrame.height
     let lineSpace: CGFloat = 2
+    var itemWidth: CGFloat = 0
+    var itemHeight: CGFloat = 0
+
 
     var timer: Timer?
 
@@ -40,7 +42,7 @@ class GridLayoutController: UIViewController {
         let layout = UICollectionViewFlowLayout()
 
         let collectionView = UICollectionView(
-            frame: view.frame,
+            frame: self.view.frame,
             collectionViewLayout: layout
         )
         collectionView.isScrollEnabled = false
@@ -48,6 +50,36 @@ class GridLayoutController: UIViewController {
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         return collectionView
+    }()
+
+    lazy var confirmButton: UIButton = {
+
+        let button = UIButton()
+        button.backgroundColor = .clear
+        button.translatesAutoresizingMaskIntoConstraints = false
+
+        button.addTarget(self, action: #selector(stopRandom), for: .touchUpInside)
+
+        return button
+
+    }()
+
+    lazy var highlightRectangle: UIView = {
+
+        let view = UIView()
+        view.backgroundColor = .clear
+        view.layer.borderWidth = lineSpace
+        view.layer.borderColor = #colorLiteral(red: 0.3843137255, green: 0.8156862745, blue: 0.8274509804, alpha: 1)
+        view.translatesAutoresizingMaskIntoConstraints = false
+
+        view.addSubview(confirmButton)
+        confirmButton.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
+        confirmButton.heightAnchor.constraint(equalToConstant: itemHeight + lineSpace).isActive = true
+        confirmButton.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
+        confirmButton.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+        return view
+
     }()
 
     override var prefersStatusBarHidden: Bool {
@@ -82,7 +114,11 @@ class GridLayoutController: UIViewController {
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
+        highlightRectangle.removeFromSuperview()
+
         collectionView.reloadData()
+
+        view.addSubview(highlightRectangle)
     }
 
     private func setupCollectionView() {
@@ -97,10 +133,8 @@ class GridLayoutController: UIViewController {
 
         collectionView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         collectionView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        // , constant: statusBarHeight
         collectionView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-
 
     }
 
@@ -114,16 +148,16 @@ class GridLayoutController: UIViewController {
             let currentTime = formatter.string(from: now)
 
             print(currentTime)
-            print("-----")
 
+            self.highlightRectangle.removeFromSuperview()
             self.randomColumn = Int.random(in: 1...column)
             self.randomRow = Int.random(in: 1...row)
 
             self.collectionView.reloadData()
 
             print(self.randomColumn!)
+            print("-----")
         })
-
 
     }
 
@@ -208,13 +242,24 @@ extension GridLayoutController: UICollectionViewDataSource {
                 if indexPath.item == randomColumn - 1 {
                     confirmCell.selectable = true
 
+                    view.addSubview(highlightRectangle)
+                    highlightRectangle.leftAnchor.constraint(equalTo: view.leftAnchor, constant: itemWidth * CGFloat(randomColumn - 1) + lineSpace * CGFloat(randomColumn) - 1).isActive = true
+                    highlightRectangle.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+                    print("randomColumn: \(randomColumn)")
+                    print(">>>")
+                    highlightRectangle.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 1 / columnCount).isActive = true
+                    highlightRectangle.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+
+
                 }
                 else {
                     confirmCell.selectable = false
                 }
 
             } else {
+                // after tapping to stop random
                 confirmCell.selectable = false
+                highlightRectangle.removeFromSuperview()
             }
 
             return confirmCell
@@ -225,9 +270,9 @@ extension GridLayoutController: UICollectionViewDataSource {
 
 }
 
-extension GridLayoutController: ConfirmCellDelegate {
+extension GridLayoutController: ConfirmCellDelegate { // 修改後不需要此 protocol
 
-    func confirmToStopRandom() {
+    @objc func stopRandom() {
         randomColumn = nil
         randomRow = nil
         collectionView.reloadData()
@@ -265,15 +310,15 @@ extension GridLayoutController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-//        let width = fullScreenSize.width - lineSpace * (columnCount + 1)
-//        let height = fullScreenSize.height - statusBarHeight - lineSpace * (rowCount + 1)
+        let width = collectionView.frame.width - lineSpace * (columnCount + 1)
+        let height = collectionView.frame.height - lineSpace * (rowCount + 1)
 
-        let width = view.frame.width - lineSpace * (columnCount + 1)
-        let height = view.frame.height - lineSpace * (rowCount + 1)
+        itemWidth = width / CGFloat(columnCount)
+        itemHeight = height / CGFloat(rowCount + 1)
 
         return CGSize(
-            width: width / CGFloat(columnCount),
-            height: height / CGFloat(rowCount + 1)
+            width: itemWidth,
+            height: itemHeight
         )
 
     }

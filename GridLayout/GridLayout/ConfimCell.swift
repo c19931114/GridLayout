@@ -10,7 +10,7 @@ import UIKit
 
 protocol ConfirmCellDelegate: AnyObject {
 
-    func confirmToStopRandom()
+    func stopRandom()
 }
 
 class ConfirmCell: UICollectionViewCell {
@@ -32,7 +32,7 @@ class ConfirmCell: UICollectionViewCell {
                     
                 } else {
 
-                    highlightView.backgroundColor = .lightGray
+                    highlightView.backgroundColor = .clear
                     highlightView.isUserInteractionEnabled = false
 
                 }
@@ -45,7 +45,7 @@ class ConfirmCell: UICollectionViewCell {
     lazy var highlightView: UIView = {
 
         let view = UIView()
-        view.backgroundColor = .lightGray
+        view.backgroundColor = .clear
         view.translatesAutoresizingMaskIntoConstraints = false
 
         view.isUserInteractionEnabled = false // default is true
@@ -85,7 +85,7 @@ class ConfirmCell: UICollectionViewCell {
     @objc func stopRandom(tapGesture: UITapGestureRecognizer) {
 
         print("tap")
-        delegate?.confirmToStopRandom()
+        delegate?.stopRandom()
 
     }
 
@@ -96,14 +96,14 @@ class ConfirmCell: UICollectionViewCell {
         contentView.addSubview(highlightView)
         highlightView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor).isActive = true
         highlightView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor).isActive = true
-        highlightView.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -lineSpace).isActive = true
-        highlightView.heightAnchor.constraint(equalTo: contentView.heightAnchor, constant: -lineSpace) .isActive = true
+        highlightView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9).isActive = true
+        highlightView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.8).isActive = true
 
         highlightView.addSubview(confirmLabel)
         confirmLabel.leftAnchor.constraint(equalTo: highlightView.leftAnchor).isActive = true
         confirmLabel.bottomAnchor.constraint(equalTo: highlightView.bottomAnchor).isActive = true
         confirmLabel.rightAnchor.constraint(equalTo: highlightView.rightAnchor).isActive = true
-        confirmLabel.heightAnchor.constraint(equalTo: highlightView.heightAnchor, multiplier: 1 / lineSpace) .isActive = true
+        confirmLabel.heightAnchor.constraint(equalTo: highlightView.heightAnchor, multiplier: 1 / lineSpace).isActive = true
 
     }
 
