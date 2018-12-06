@@ -140,7 +140,7 @@ class GridLayoutController: UIViewController {
 
     func startRandomWith(_ column: Int, _ row: Int) {
 
-        timer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true, block: { (_) in
+        timer = Timer.scheduledTimer(withTimeInterval: 10, repeats: true, block: { (_) in
 
             let now = Date()
             let formatter = DateFormatter() // "yyyy/MMM/dd E HH:mm:ss "
